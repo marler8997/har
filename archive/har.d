@@ -129,7 +129,11 @@ struct HarExtractor
                     if (line.startsWith(delimiter))
                         break;
                     if (!dryRun)
+                    {
+                        import std.ascii : newline;
                         currentOutputFile.write(line);
+                        currentOutputFile.write(newline);
+                    }
                 }
             }
         }
