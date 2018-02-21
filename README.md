@@ -37,7 +37,7 @@ This is yet another file also archived within the same HAR file.
 
 ## Directory Separators
 
-For now, HAR only supports the foward slash `/` as a directory separator, regardless of platform.
+HAR only supports the foward slash `/` as a directory separator, regardless of platform.
 
 Correct:
 ```
@@ -54,6 +54,8 @@ Use quotes if the filename contains whitespace:
 ```
 --- "i like spaces/in my filenames"
 ```
+
+Note that quoted filenames do not support standard escape sequences (i.e. `\\` or `\"`).  If you want to include a special character in your filename, include it.  The tradeof is that HAR does not support filenames with quotes or newlines, but any other character will work.
 
 ## Properties
 
@@ -126,21 +128,15 @@ All standard newlines sequences are supported, `\n`, `\r\n` or `\r`.
 
 ## Which Newlines belong to the file?
 
-When a delimiter is found marking the end of a file, the preceding newline is removed from the file.
-
-> NOTE: the reason for this is so that files with and without "ending newlines" can be represented.
+All newline characters belong to the line they are terminating. This means that all non-empty files will end with a newline.  This rule makes processing har files simpler, because without it, determining which newlines belong to the file would require looking ahead at the next line.
 
 ### Example:
 ```
 --- empty_file.txt
---- no_newline_file.txt
-this file has no newline
 --- one_newline_file.txt
 this file has one newline
-
 --- two_newlines_file.txt
 this file has two newlines
-
 
 --- another_empty_file.txt
 ```
@@ -148,10 +144,6 @@ this file has two newlines
 #### empty_file.txt
 ```
 EOF
-```
-#### no_newline_file.txt
-```
-this file has no newlineEOF
 ```
 #### one_newline_file.txt
 ```
@@ -165,9 +157,11 @@ this file has two newlines\n
 EOF
 ```
 
+Note that even though this mechanism make it simpler to process HAR files, it comes at the cost of not being able to represent files without newlines at the end of the file.  Since HAR is not meant to support everything (i.e. binary files), not supporting this small number of use cases is a sensible tradeoff for the added simplicity.
+
 ## Using ".."
 
-HAR doesn't support using `..` to create files in parent directories.  This guarantees that if you extract a HAR file, it can only create files in the given output directory, it cannot extract files outside of that.
+HAR doesn't support using `..` to create files in parent directories.  This guarantees that if you extract a HAR file, it can only create files in the given output directory, it cannot extract files outside of it.
 
 ## Absolute filenames
 
