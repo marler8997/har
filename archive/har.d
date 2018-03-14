@@ -1,3 +1,23 @@
+/**
+HAR - Human Archive Format
+
+https://github.com/marler8997/har
+
+HAR is a simple format to represent multiple files in a single block of text, i.e.
+---
+--- main.d
+import foo;
+void main()
+{
+    foofunc();
+}
+--- foo.d
+module foo;
+void foofunc()
+{
+}
+---
+*/
 module archive.har;
 
 import std.typecons : Flag, Yes, No;
@@ -59,7 +79,6 @@ struct HarExtractor
     {
         this.filenameForErrors = harFilename;
         auto harFile = File(harFilename, "r");
-        scope(exit) harFile.close();
         extract(harFile.byLine(Yes.keepTerminator), fileInfoCallback);
     }
 
@@ -273,14 +292,14 @@ struct FileProperties
     const(char)[] filename;
 }
 
-@property auto formatDir(const(char)[] dir)
+auto formatDir(const(char)[] dir)
 {
-    if(dir.length == 0)
+    if (dir.length == 0)
         dir = ".";
 
     return formatQuotedIfSpaces(dir);
 }
-@property auto formatFile(const(char)[] file)
+auto formatFile(const(char)[] file)
   in { assert(file.length > 0); } do
 {
     return formatQuotedIfSpaces(file);
@@ -288,7 +307,8 @@ struct FileProperties
 
 // returns a formatter that will print the given string.  it will print
 // it surrounded with quotes if the string contains any spaces.
-@property auto formatQuotedIfSpaces(T...)(T args) if(T.length > 0)
+auto formatQuotedIfSpaces(T...)(T args)
+if (T.length > 0)
 {
     struct Formatter
     {
@@ -297,21 +317,21 @@ struct FileProperties
         {
             import std.string : indexOf;
             bool useQuotes = false;
-            foreach(arg; args)
+            foreach (arg; args)
             {
-                if(arg.indexOf(' ') >= 0)
+                if (arg.indexOf(' ') >= 0)
                 {
                     useQuotes = true;
                     break;
                 }
             }
 
-            if(useQuotes)
-                sink("\"");
-            foreach(arg; args)
+            if (useQuotes)
+                sink(`"`);
+            foreach (arg; args)
                 sink(arg);
-            if(useQuotes)
-                sink("\"");
+            if (useQuotes)
+                sink(`"`);
         }
     }
     return Formatter(args);

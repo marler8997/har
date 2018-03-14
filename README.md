@@ -157,7 +157,7 @@ this file has two newlines\n
 EOF
 ```
 
-Note that even though this mechanism make it simpler to process HAR files, it comes at the cost of not being able to represent files without newlines at the end of the file.  Since HAR is not meant to support everything (i.e. binary files), not supporting this small number of use cases is a sensible tradeoff for the added simplicity.
+Note that even though this mechanism makes it simpler to process HAR files, it comes at the cost of not being able to represent files without newlines at the end of the file.  Since HAR is not meant to support everything (i.e. binary files), not supporting this small number of use cases is a sensible tradeoff for the added simplicity.
 
 ## Using ".."
 

@@ -1,0 +1,31 @@
+name "har"
+description "An extractor/archiver for HAR, the human-readable archive format"
+authors "Jonathan Marler"
+copyright "Copyright © 2018, Jonathan Marler"
+license "BSL-1.0"
+targetType "executable"
+dependency "har:library" version="*"
+sourceFiles "harmain.d"
+
+subPackage {
+  name "library"
+  description "An extractor/archiver library for HAR, the human-readable archive format"
+  targetType "library"
+  sourceFiles "archive/har.d"
+}
+
+subPackage {
+  name "test_command_line_tool"
+  description "Tests the har command line tool"
+  targetType "executable"
+  dependency "har" version="*"
+  sourceFiles "test_command_line_tool.d"
+}
+
+subPackage {
+  name "test_library"
+  description "Tests the archive.har library"
+  targetType "executable"
+  dependency "har:library" version="*"
+  sourceFiles "test/hartests.d"
+}
