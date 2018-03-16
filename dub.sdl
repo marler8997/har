@@ -7,12 +7,13 @@ version "0.1.0"
 targetType "executable"
 dependency "har:library" version="*"
 sourceFiles "harmain.d"
+sourcePaths
 
 subPackage {
   name "library"
   description "An extractor/archiver library for HAR, the human-readable archive format"
   targetType "library"
-  sourceFiles "archive/har.d"
+  sourcePaths "src"
 }
 
 subPackage {
@@ -21,6 +22,7 @@ subPackage {
   targetType "executable"
   dependency "har" version="*"
   sourceFiles "test_command_line_tool.d"
+  sourcePaths
 }
 
 subPackage {
@@ -29,4 +31,5 @@ subPackage {
   targetType "executable"
   dependency "har:library" version="*"
   sourceFiles "test/hartests.d"
+  sourcePaths
 }
