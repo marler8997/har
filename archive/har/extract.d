@@ -1,24 +1,7 @@
 /**
-HAR - Human Archive Format
-
-https://github.com/marler8997/har
-
-HAR is a simple format to represent multiple files in a single block of text, i.e.
----
---- main.d
-import foo;
-void main()
-{
-    foofunc();
-}
---- foo.d
-module foo;
-void foofunc()
-{
-}
----
+The extraction library for HAR.
 */
-module archive.har;
+module archive.har.extract;
 
 import std.typecons : Flag, Yes, No;
 import std.array : Appender;

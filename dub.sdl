@@ -12,7 +12,9 @@ subPackage {
   name "library"
   description "An extractor/archiver library for HAR, the human-readable archive format"
   targetType "library"
-  sourceFiles "archive/har.d"
+  sourceFiles "archive/har/package.d"
+  sourceFiles "archive/har/extract.d"
+  sourceFiles "archive/har/archive.d"
 }
 
 subPackage {
