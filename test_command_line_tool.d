@@ -41,18 +41,12 @@ int tryMain(string[] args)
     auto outDir = rootDir.buildPath("out");
     auto harExe = outDir.buildPath("har" ~ exeExtention);
 
-    // TODO: move this pattern to std.file using RAII
-    auto oldDir = getcwd;
-    scope (exit)
-        chdir(oldDir);
-    chdir(rootDir);
-
     auto testDir = rootDir.buildPath("test"); // workaround https://issues.dlang.org/show_bug.cgi?id=6138 : we need absolutePath
     auto outTestDir = outDir.buildPath("test");
     mkdirRecurse(outTestDir);
     foreach (entry; dirEntries(testDir, "*.har", SpanMode.shallow))
     {
-        auto file = entry.name.relativePath;
+        auto file = entry.name;
         auto name = file.baseName.setExtension(".expected");
         run(format("%s %s --dir=%s", harExe, file, outTestDir.buildPath(name)));
         auto expected = file.setExtension(".expected");
