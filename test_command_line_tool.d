@@ -4,35 +4,51 @@ import std.file;
 import std.stdio;
 import std.process : spawnShell, wait;
 
-class SilentException : Exception { this() { super(null); } }
-auto quit() { return new SilentException(); }
+class SilentException : Exception
+{
+    this()
+    {
+        super(null);
+    }
+}
+
+auto quit()
+{
+    return new SilentException();
+}
 
 int main(string[] args)
 {
-    try { return tryMain(args); }
-    catch(SilentException) { return 1; }
+    try
+    {
+        return tryMain(args);
+    }
+    catch (SilentException)
+    {
+        return 1;
+    }
 }
 
 int tryMain(string[] args)
 {
     // TODO: move to std.path
-    version(Windows)
-        string exeExtention=".exe";
+    version (Windows)
+        string exeExtention = ".exe";
     else
         string exeExtention;
 
-    auto rootDir=__FILE_FULL_PATH__.dirName;
+    auto rootDir = __FILE_FULL_PATH__.dirName;
     auto outDir = rootDir.buildPath("out");
-    auto harExe = outDir.buildPath("har"~exeExtention);
+    auto harExe = outDir.buildPath("har" ~ exeExtention);
 
     // TODO: move this pattern to std.file using RAII
-    auto oldDir=getcwd;
-    scope(exit)
+    auto oldDir = getcwd;
+    scope (exit)
         chdir(oldDir);
     chdir(rootDir);
 
-    auto testDir=rootDir.buildPath("test"); // workaround https://issues.dlang.org/show_bug.cgi?id=6138 : we need absolutePath
-    auto outTestDir=outDir.buildPath("test");
+    auto testDir = rootDir.buildPath("test"); // workaround https://issues.dlang.org/show_bug.cgi?id=6138 : we need absolutePath
+    auto outTestDir = outDir.buildPath("test");
     mkdirRecurse(outTestDir);
     foreach (entry; dirEntries(testDir, "*.har", SpanMode.shallow))
     {
