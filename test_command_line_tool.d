@@ -1,7 +1,8 @@
-import std.format : format;
 import std.path;
 import std.file;
 import std.stdio;
+
+import std.format : format;
 import std.process : spawnShell, wait;
 
 class SilentException : Exception
