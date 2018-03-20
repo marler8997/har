@@ -1,24 +1,57 @@
-import std.format : format;
-import std.path : setExtension;
-import std.file : dirEntries, SpanMode;
+import std.path;
+import std.file;
 import std.stdio;
+
+import std.format : format;
 import std.process : spawnShell, wait;
 
-class SilentException : Exception { this() { super(null); } }
-auto quit() { return new SilentException(); }
+class SilentException : Exception
+{
+    this()
+    {
+        super(null);
+    }
+}
+
+auto quit()
+{
+    return new SilentException();
+}
 
 int main(string[] args)
 {
-    try { return tryMain(args); }
-    catch(SilentException) { return 1; }
+    try
+    {
+        return tryMain(args);
+    }
+    catch (SilentException)
+    {
+        return 1;
+    }
 }
+
 int tryMain(string[] args)
 {
-    foreach (entry; dirEntries("test", "*.har", SpanMode.shallow))
+    // TODO: move to std.path
+    version (Windows)
+        string exeExtention = ".exe";
+    else
+        string exeExtention;
+
+    auto rootDir = __FILE_FULL_PATH__.dirName;
+    auto outDir = rootDir.buildPath("out");
+    auto harExe = outDir.buildPath("har" ~ exeExtention);
+
+    auto testDir = rootDir.buildPath("test"); // workaround https://issues.dlang.org/show_bug.cgi?id=6138 : we need absolutePath
+    auto outTestDir = outDir.buildPath("test");
+    mkdirRecurse(outTestDir);
+    foreach (entry; dirEntries(testDir, "*.har", SpanMode.shallow))
     {
-        run(format("./har %s", entry.name));
-        auto expected = entry.name.setExtension(".expected");
-        auto actual = entry.name.setExtension("");
+        auto file = entry.name;
+        auto name = file.baseName.setExtension(".expected");
+        run(format("%s %s --dir=%s", harExe, file, outTestDir.buildPath(name)));
+        auto expected = file.setExtension(".expected");
+        auto actual = outTestDir.buildPath(name);
         run(format("diff --brief -r %s %s", expected, actual));
     }
     return 0;

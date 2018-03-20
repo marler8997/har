@@ -5,6 +5,7 @@ copyright "Copyright © 2018, Jonathan Marler"
 license "BSL-1.0"
 version "0.1.0"
 targetType "executable"
+targetPath "out"
 dependency "har:library" version="*"
 sourceFiles "harmain.d"
 sourcePaths
@@ -13,6 +14,8 @@ subPackage {
   name "library"
   description "An extractor/archiver library for HAR, the human-readable archive format"
   targetType "library"
+  targetName "har"
+  targetPath "out"
   sourcePaths "src"
 }
 
@@ -20,6 +23,7 @@ subPackage {
   name "test_command_line_tool"
   description "Tests the har command line tool"
   targetType "executable"
+  targetPath "out/test"
   dependency "har" version="*"
   sourceFiles "test_command_line_tool.d"
   sourcePaths
@@ -29,6 +33,7 @@ subPackage {
   name "test_library"
   description "Tests the archive.har library"
   targetType "executable"
+  targetPath "out/test"
   dependency "har:library" version="*"
   sourceFiles "test/hartests.d"
   sourcePaths

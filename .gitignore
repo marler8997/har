@@ -1,2 +1,5 @@
 *~
 /.dub
+
+# for -cov
+*.lst
