@@ -80,14 +80,27 @@ void testError(string text, size_t lineOfError, string error, size_t testLine = 
         assert(e.line == lineOfError);
     }
 }
-void test(string text, string[] expectedFilenames, size_t testLine = __LINE__)
+
+void testImpl(T)(string text, T[] expected, size_t testLine = __LINE__)
 {
     auto extractor = HarExtractor();
     extractor.filenameForErrors = format("%s_line_%s", __FILE__, testLine);
     extractor.dryRun = true;
-    auto extractedFiles = appender!(string[]);
-    extractor.extract(text.lineSplitter, delegate(string fileFullName, FileProperties props) {
-        extractedFiles.put(fileFullName);
+    auto extractedFiles = appender!(T[]);
+    extractor.extract(text.lineSplitter, delegate(string fileFullName, FileProperties props)
+    {
+        static if (is(T == string))
+        {
+            extractedFiles.put(fileFullName);
+        }
+        else
+        {
+            extractedFiles.put(props);
+        }
+
     });
-    assert(expectedFilenames == extractedFiles.data);
+    assert(expected == extractedFiles.data);
 }
+
+alias test = testImpl!string;
+alias testSummary = testImpl!FileProperties;
