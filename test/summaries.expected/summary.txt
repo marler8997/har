@@ -1,0 +1,3 @@
+base.d|2
+lib.d|7
+view/foo.txt|10

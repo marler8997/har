@@ -49,9 +49,16 @@ int tryMain(string[] args)
     {
         auto file = entry.name;
         auto name = file.baseName.setExtension(".expected");
-        run(format("%s %s --dir=%s", harExe, file, outTestDir.buildPath(name)));
         auto expected = file.setExtension(".expected");
         auto actual = outTestDir.buildPath(name);
+
+        auto cmd = format("%s %s --dir=%s", harExe, file, actual);
+
+        const summary = buildPath(expected, "summary.txt");
+        if (exists(summary))
+            cmd ~= " --summary=" ~ actual ~ "/summary.txt";
+
+        run(cmd);
         run(format("diff --brief -r %s %s", expected, actual));
     }
     return 0;

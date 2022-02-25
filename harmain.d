@@ -45,6 +45,7 @@ int tryMain(string[] args)
     }
 
     string outputDirOption = null;
+    string summaryPath = null;
     bool quietMode = false;
     bool verbose = false;
     bool dryRun = false;
@@ -61,6 +62,8 @@ int tryMain(string[] args)
             }
             else if (arg.startsWith("--dir="))
                 outputDirOption = arg[6 .. $];
+            else if (arg.startsWith("--summary="))
+                summaryPath = arg["--summary=".length .. $];
             else if (arg == "--quiet")
                 quietMode = true;
             else if (arg == "--verbose")
@@ -129,6 +132,23 @@ int tryMain(string[] args)
         handleNewOutputDir(outputDirOption);
     }
 
+    File summaryFile;
+    if (summaryPath)
+    {
+        import std.path;
+        const dir = dirName(summaryPath);
+        if (!exists(dir))
+        {
+            stderr.writeln("Directory for summary file doesn't exist: ", dir);
+            return 1;
+        }
+
+        if (verbose)
+            writeln("Creating summary file: ", summaryPath);
+
+        summaryFile = File(summaryPath, "w");
+    }
+
     foreach(harFilename; args)
     {
         auto extractor = HarExtractor();
@@ -152,6 +172,8 @@ int tryMain(string[] args)
             {
                 writeln(fullFileName);
             }
+            if (summaryPath)
+                summaryFile.writeln(fileProps.filename, '|', fileProps.offset);
         });
     }
     return 0;
