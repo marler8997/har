@@ -60,6 +60,23 @@ void main()
         testError(s[0] ~ "\xe2\x82\x28" ~ s[1], 1, "invalid utf8 sequence");
         test     (s[0] ~ "\xf0\x90\x8c\xbc" ~ s[1], ["\xf0\x90\x8c\xbc"]);
     }
+
+    // Test summaries
+`--- base.d
+This is some text.
+
+And some more!
+
+--- lib.d
+Here's some more.
+
+--- view/foo.txt
+Hello, World!
+`.testSummary([
+    FileProperties("base.d", 2),
+    FileProperties("lib.d", 7),
+    FileProperties("view/foo.txt", 10),
+]);
 }
 
 void testError(string text, size_t lineOfError, string error, size_t testLine = __LINE__)

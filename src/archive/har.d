@@ -102,6 +102,8 @@ struct HarExtractor
         for (;;)
         {
             auto fileInfo = parseFileLine(line[delimiter.length .. $], delimiter[0]);
+            fileInfo.offset = lineNumber + 1; // First line following --- app.d
+
             auto fullFileName = buildPath(outputDir, fileInfo.filename);
             fileInfoCallback(fullFileName, fileInfo);
 
@@ -290,6 +292,17 @@ private bool isEndOfFileChar(C)(const(C) c)
 struct FileProperties
 {
     const(char)[] filename;
+
+    /++
+     + Absolute line number in the HAR file that contains the first line of the
+     + current file, e.g. `2` for `app.d` in the following example:
+     +
+     + ```
+     + --- app.d
+     + void main() {}
+     + ```
+     +/
+    size_t offset;
 }
 
 auto formatDir(const(char)[] dir)
